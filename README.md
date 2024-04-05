@@ -1,6 +1,6 @@
-![CI](https://github.com/shufo/auto-assign-reviewer-by-issuer/workflows/CI/badge.svg)
-
 # Auto Assign Reviewer By Issuer
+
+[![CI](https://github.com/lkcozy/auto-assign-reviewer-by-issuer/actions/workflows/unit-test.yml/badge.svg)](https://github.com/lkcozy/auto-assign-reviewer-by-issuer/actions/workflows/unit-test.yml)
 
 Automatically assigns reviewers based on pull request issuer
 
@@ -42,10 +42,10 @@ jobs:
   assign:
     runs-on: ubuntu-latest
     steps:
-    - uses: shufo/auto-assign-reviewer-by-issuer@v1.0.0
-      with:
-        config: '.github/reviewers.yml'
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: lkcozy/auto-assign-reviewer-by-issuer@v1.0.0
+        with:
+          config: ".github/reviewers.yml"
+          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Example
