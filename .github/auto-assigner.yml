@@ -1,11 +1,12 @@
 ---
-shufo:
-  - shufo2
-shufo2:
-  - shufo
+lkcozy:
+  - lkcozy2
+lkcozy2:
+  - lkcozy
 # you can use regexp
 john.*:
-  - shufo
+  - lkcozy
 # fallback
 .*:
-  - shufo
+  - lkcozy
+

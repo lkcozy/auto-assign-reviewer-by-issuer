@@ -2,12 +2,26 @@ name: "auto assign"
 
 on:
   pull_request:
-    types: [opened, edited]
+    types: [opened, edited, synchronize]
 
 jobs:
   assign:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "yarn"
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Build
+        run: yarn build
+
       - name: Auto-Assign Action
         uses: ./
         with:
