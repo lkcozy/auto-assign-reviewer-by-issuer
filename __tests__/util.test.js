@@ -6,7 +6,7 @@ test("config parser", async () => {
     encoding: "utf8",
   });
   const config = parseConfig(content);
-  expect(config["shufo"]).toMatchObject(["shufo2"]);
+  expect(config["lkcozy"]).toMatchObject(["lkcozy2"]);
 });
 
 test("assignee matching", async () => {
@@ -16,7 +16,7 @@ test("assignee matching", async () => {
 
   const config = parseConfig(content);
 
-  expect(hasAssignee(config, "shufo")).toBeTruthy();
+  expect(hasAssignee(config, "lkcozy")).toBeTruthy();
 
   // fallback
   expect(hasAssignee(config, "john")).toBeTruthy();
@@ -29,5 +29,5 @@ test("get reviewers", async () => {
 
   const config = parseConfig(content);
 
-  expect(getReviewers(config, "shufo")).toMatchObject(["shufo2"]);
+  expect(getReviewers(config, "lkcozy")).toMatchObject(["lkcozy2"]);
 });
