@@ -1,6 +1,5 @@
 const core = require("@actions/core");
-const github = require("@actions/github");
-const context = github.context;
+const { getOctokit, context } = require("@actions/github");
 const { parseConfig, hasAssignee, getReviewers } = require("./lib/util");
 
 // most @actions toolkit packages have async methods
@@ -8,7 +7,7 @@ async function run() {
   try {
     const token = core.getInput("token", { required: true });
     const configPath = core.getInput("config");
-    const octokit = new github.GitHub(token);
+    const octokit = getOctokit(token);
 
     const configContent = await fetchContent(octokit, configPath);
     const config = parseConfig(configContent);
@@ -28,7 +27,7 @@ async function run() {
 }
 
 async function assignReviewers(octokit, reviewers) {
-  await octokit.pulls.createReviewRequest({
+  await octokit.rest.pulls.requestReviewers({
     owner: context.repo.owner,
     repo: context.repo.repo,
     pull_number: context.payload.pull_request.number,
@@ -37,11 +36,11 @@ async function assignReviewers(octokit, reviewers) {
 }
 
 async function fetchContent(client, repoPath) {
-  const response = await client.repos.getContents({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
+  const response = await client.rest.repos.getContent({
+    owner: context.repo.owner,
+    repo: context.repo.repo,
     path: repoPath,
-    ref: github.context.sha,
+    ref: context.sha,
   });
 
   return Buffer.from(response.data.content, response.data.encoding).toString();
