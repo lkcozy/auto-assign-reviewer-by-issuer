@@ -1,11 +1,14 @@
-const js = require("@eslint/js");
-const typescript = require("@typescript-eslint/eslint-plugin");
-const typescriptParser = require("@typescript-eslint/parser");
-const jest = require("eslint-plugin-jest");
-const globals = require("globals");
+import js from "@eslint/js";
+import typescript from "@typescript-eslint/eslint-plugin";
+import typescriptParser from "@typescript-eslint/parser";
+import jest from "eslint-plugin-jest";
+import globals from "globals";
 
-module.exports = [
+export default [
 	js.configs.recommended,
+	{
+		ignores: ["dist/**", "node_modules/**"],
+	},
 	{
 		files: ["**/*.ts", "**/*.tsx"],
 		languageOptions: {

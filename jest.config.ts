@@ -1,4 +1,6 @@
-module.exports = {
+import type { Config } from "jest";
+
+const config: Config = {
 	preset: "ts-jest",
 	testEnvironment: "node",
 	testMatch: ["**/__tests__/**/?(*.)+(spec|test).[jt]s?(x)"],
@@ -8,3 +10,5 @@ module.exports = {
 	},
 	collectCoverageFrom: ["index.ts", "lib/**/*.ts", "!**/*.d.ts"],
 };
+
+export default config;

@@ -63,7 +63,7 @@ function hasAssignee(config, assignee) {
         try {
             return assignee.match(new RegExp(key));
         }
-        catch (error) {
+        catch {
             console.error(`Invalid regex pattern in config: ${key}`);
             return false;
         }
@@ -78,7 +78,7 @@ function getReviewers(config, assignee) {
         try {
             return assignee.match(new RegExp(key));
         }
-        catch (error) {
+        catch {
             console.error(`Invalid regex pattern in config: ${key}`);
             return false;
         }

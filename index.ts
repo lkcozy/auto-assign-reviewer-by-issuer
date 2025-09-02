@@ -120,7 +120,7 @@ async function fetchContent(
 		const fileContent = response.data as GitHubFileContent;
 		return Buffer.from(
 			fileContent.content,
-			fileContent.encoding as any,
+			fileContent.encoding as "utf8" | "base64",
 		).toString();
 	} catch (error: unknown) {
 		if (

@@ -34,7 +34,7 @@ export function hasAssignee(
 	const matched = _.findKey(config, (_, key) => {
 		try {
 			return assignee.match(new RegExp(key));
-		} catch (error) {
+		} catch {
 			// Invalid regex pattern
 			console.error(`Invalid regex pattern in config: ${key}`);
 			return false;
@@ -55,7 +55,7 @@ export function getReviewers(
 	const matched = _.findKey(config, (_, key) => {
 		try {
 			return assignee.match(new RegExp(key));
-		} catch (error) {
+		} catch {
 			// Invalid regex pattern
 			console.error(`Invalid regex pattern in config: ${key}`);
 			return false;
@@ -70,4 +70,3 @@ export function getReviewers(
 
 	return [];
 }
-

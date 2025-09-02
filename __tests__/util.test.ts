@@ -1,6 +1,6 @@
-const { parseConfig, hasAssignee, getReviewers } = require("../lib/util");
-const fs = require("fs");
-const path = require("path");
+import { parseConfig, hasAssignee, getReviewers, Config } from "../lib/util";
+import * as fs from "fs";
+import * as path from "path";
 
 test("config parser", async () => {
 	const content = fs.readFileSync(
@@ -9,7 +9,7 @@ test("config parser", async () => {
 			encoding: "utf8",
 		},
 	);
-	const config = parseConfig(content);
+	const config = parseConfig(content) as Config;
 	expect(config["lkcozy"]).toMatchObject(["lkcozy2"]);
 });
 
@@ -21,7 +21,7 @@ test("assignee matching", async () => {
 		},
 	);
 
-	const config = parseConfig(content);
+	const config = parseConfig(content) as Config;
 
 	expect(hasAssignee(config, "lkcozy")).toBeTruthy();
 
@@ -37,7 +37,7 @@ test("get reviewers", async () => {
 		},
 	);
 
-	const config = parseConfig(content);
+	const config = parseConfig(content) as Config;
 
 	expect(getReviewers(config, "lkcozy")).toMatchObject(["lkcozy2"]);
 });
