@@ -1,4 +1,4 @@
-name: "auto assign"
+name: 'auto assign'
 
 on:
   pull_request:
@@ -13,8 +13,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: ".nvmrc"
-          cache: "yarn"
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
 
       - name: Install Dependencies
         run: yarn install
@@ -25,5 +25,4 @@ jobs:
       - name: Auto-Assign Action
         uses: ./
         with:
-          config: ".github/auto-assigner.yml"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          config: '.github/auto-assigner.yml'

@@ -5,7 +5,13 @@ import { parseConfig, hasAssignee, getReviewers, Config } from "./lib/util";
 async function run(): Promise<void> {
 	try {
 		// Get inputs with defaults
-		const token = core.getInput("token", { required: true });
+		const token = core.getInput("token") || process.env.GITHUB_TOKEN;
+		if (!token) {
+			core.setFailed(
+				"No token provided and GITHUB_TOKEN environment variable is not available",
+			);
+			return;
+		}
 		const configPath = core.getInput("config");
 		const maxRetries = parseInt(core.getInput("max-retries") || "3");
 		const retryDelay = parseInt(core.getInput("retry-delay") || "1000");

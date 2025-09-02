@@ -5,9 +5,9 @@ branding:
   color: 'blue'
 inputs:
   token:
-    description: 'GitHub token for API access (use ${{ github.token }} for default)'
+    description: 'GitHub token for API access (optional, will use default if not provided)'
     required: false
-    default: '${{ github.token }}'
+    default: ''
   config:
     description: 'Path to the YAML configuration file'
     required: false
@@ -26,5 +26,5 @@ outputs:
   issuer:
     description: 'The pull request issuer username'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'
