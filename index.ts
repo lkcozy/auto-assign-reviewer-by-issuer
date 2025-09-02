@@ -4,16 +4,12 @@ import { parseConfig, hasAssignee, getReviewers, Config } from "./lib/util";
 
 async function run(): Promise<void> {
 	try {
-		// Use GITHUB_TOKEN by default if no token is provided
-		const token = core.getInput("token") || process.env.GITHUB_TOKEN;
-		if (!token) {
-			core.setFailed(
-				"No token provided. Use ${{ github.token }} or provide a personal access token.",
-			);
-			return;
-		}
+		// Get inputs with defaults
+		const token = core.getInput("token", { required: true });
+		const configPath = core.getInput("config");
+		const maxRetries = parseInt(core.getInput("max-retries") || "3");
+		const retryDelay = parseInt(core.getInput("retry-delay") || "1000");
 
-		const configPath = core.getInput("config") || ".github/auto-assigner.yml";
 		const octokit = getOctokit(token);
 
 		// Validate that this is a pull request event
@@ -22,7 +18,28 @@ async function run(): Promise<void> {
 			return;
 		}
 
-		const configContent = await fetchContent(octokit, configPath);
+		// Retry wrapper for API calls with proper TypeScript typing
+		const retryOperation = async <T>(
+			operation: () => Promise<T>,
+			maxAttempts: number = maxRetries,
+		): Promise<T> => {
+			for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+				try {
+					return await operation();
+				} catch (error) {
+					if (attempt === maxAttempts) throw error;
+					core.warning(
+						`Attempt ${attempt} failed, retrying in ${retryDelay}ms...`,
+					);
+					await new Promise((resolve) => setTimeout(resolve, retryDelay));
+				}
+			}
+			throw new Error("Retry operation failed");
+		};
+
+		const configContent = await retryOperation(() =>
+			fetchContent(octokit, configPath),
+		);
 		if (!configContent) {
 			core.setFailed(`Could not fetch config file from path: ${configPath}`);
 			return;
@@ -43,7 +60,7 @@ async function run(): Promise<void> {
 		if (hasAssignee(config, issuer)) {
 			const reviewers = getReviewers(config, issuer);
 			if (reviewers && reviewers.length > 0) {
-				await assignReviewers(octokit, reviewers);
+				await retryOperation(() => assignReviewers(octokit, reviewers));
 				core.setOutput("assigned_reviewers", reviewers.join(","));
 				core.info(`✅ Assigned reviewers: ${reviewers.join(", ")}`);
 			} else {
@@ -71,6 +88,12 @@ async function assignReviewers(
 	});
 }
 
+interface GitHubFileContent {
+	type: "file";
+	content: string;
+	encoding: string;
+}
+
 async function fetchContent(
 	client: ReturnType<typeof getOctokit>,
 	repoPath: string,
@@ -94,16 +117,17 @@ async function fetchContent(
 			return null;
 		}
 
+		const fileContent = response.data as GitHubFileContent;
 		return Buffer.from(
-			response.data.content,
-			response.data.encoding,
+			fileContent.content,
+			fileContent.encoding as any,
 		).toString();
 	} catch (error: unknown) {
 		if (
 			error &&
 			typeof error === "object" &&
 			"status" in error &&
-			error.status === 404
+			(error as { status: number }).status === 404
 		) {
 			core.error(`Config file not found at path: ${repoPath}`);
 			return null;
