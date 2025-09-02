@@ -42,7 +42,7 @@ jobs:
   assign:
     runs-on: ubuntu-latest
     steps:
-      - uses: lkcozy/auto-assign-reviewer-by-issuer@v1.0.0
+      - uses: lkcozy/auto-assign-reviewer-by-issuer@main
         with:
           config: ".github/reviewers.yml"
           token: ${{ secrets.GITHUB_TOKEN }}
