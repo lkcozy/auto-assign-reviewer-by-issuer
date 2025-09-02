@@ -1,20 +1,30 @@
 name: 'Auto Assign Reviewer by Issuer'
-description: 'This action will automatically assigns reviewers based on pull request issuer'
+description: 'Automatically assigns reviewers to pull requests based on the issuer using regex patterns'
 branding:
-  icon: 'at-sign'
-  color: 'green'
+  icon: 'users'
+  color: 'blue'
 inputs:
   token:
-    description: 'A github token'
-    required: true
-    default: 'default'
+    description: 'GitHub token for API access (use ${{ github.token }} for default)'
+    required: false
+    default: '${{ github.token }}'
   config:
-    description: 'condifuration file'
+    description: 'Path to the YAML configuration file'
     required: false
     default: '.github/auto-assigner.yml'
+  max-retries:
+    description: 'Maximum number of retry attempts for API calls'
+    required: false
+    default: '3'
+  retry-delay:
+    description: 'Delay between retries in milliseconds'
+    required: false
+    default: '1000'
 outputs:
-  time: # output will be available to future steps 
-    description: 'The message to output'
+  assigned_reviewers:
+    description: 'List of reviewers that were assigned'
+  issuer:
+    description: 'The pull request issuer username'
 runs:
   using: 'node20'
   main: 'dist/index.js'

@@ -1,7 +1,11 @@
-const yaml = require("yaml");
-const _ = require("lodash");
+import * as yaml from "yaml";
+import _ from "lodash";
 
-const parseConfig = function (content) {
+export interface Config {
+	[key: string]: string[];
+}
+
+export function parseConfig(content: string): Config | null {
 	try {
 		const parsed = yaml.parse(content);
 		// Validate that the parsed content is an object
@@ -9,14 +13,20 @@ const parseConfig = function (content) {
 			console.error("Config must be a valid YAML object");
 			return null;
 		}
-		return parsed;
+		return parsed as Config;
 	} catch (error) {
-		console.error("Failed to parse YAML config:", error.message);
+		console.error(
+			"Failed to parse YAML config:",
+			error instanceof Error ? error.message : "Unknown error",
+		);
 		return null;
 	}
-};
+}
 
-const hasAssignee = function (config, assignee) {
+export function hasAssignee(
+	config: Config | null,
+	assignee: string | null,
+): boolean {
 	if (!config || !assignee) {
 		return false;
 	}
@@ -32,9 +42,12 @@ const hasAssignee = function (config, assignee) {
 	});
 
 	return !!matched;
-};
+}
 
-const getReviewers = function (config, assignee) {
+export function getReviewers(
+	config: Config | null,
+	assignee: string | null,
+): string[] {
 	if (!config || !assignee) {
 		return [];
 	}
@@ -56,10 +69,5 @@ const getReviewers = function (config, assignee) {
 	}
 
 	return [];
-};
+}
 
-module.exports = {
-	parseConfig: parseConfig,
-	hasAssignee: hasAssignee,
-	getReviewers: getReviewers,
-};

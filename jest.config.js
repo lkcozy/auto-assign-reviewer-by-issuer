@@ -1,8 +1,10 @@
-const appRoot = require('app-root-path');
-
 module.exports = {
-  globals: {
-    __basedir: appRoot.toString(),
-  },
-  testMatch: ['**/__tests__/**/?(*.)+(spec|test).[jt]s?(x)'],
+	preset: "ts-jest",
+	testEnvironment: "node",
+	testMatch: ["**/__tests__/**/?(*.)+(spec|test).[jt]s?(x)"],
+	moduleFileExtensions: ["ts", "js", "json"],
+	transform: {
+		"^.+\\.ts$": "ts-jest",
+	},
+	collectCoverageFrom: ["index.ts", "lib/**/*.ts", "!**/*.d.ts"],
 };
